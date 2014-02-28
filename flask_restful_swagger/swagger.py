@@ -194,10 +194,15 @@ def add_model(model_class):
     # If that attribute exists then we deduce the swagger model by the content
     # of this attribute
     properties = model['properties'] = {}
+    required = model['required'] = []
     nested = model_class.nested() if isinstance(model_class, _Nested) else {}
     for field_name, field_type in model_class.resource_fields.iteritems():
       nested_type = nested[field_name] if field_name in nested else None
       properties[field_name] = deduce_swagger_type(field_type, nested_type)
+      if hasattr(field_type,'default') and field_type.default is not None:
+        properties[field_name]['default'] = field_type.default
+      else:
+        required.append(field_name)
   elif '__init__' in dir(model_class):
     # Alternatively, if a resource_fields does not exist, we deduce the model
     # fields from the parameters sent to its __init__ method
