@@ -208,7 +208,7 @@ def add_model(model_class):
     if argspec.defaults:
       defaults = zip(argspec.args[-len(argspec.defaults):], argspec.defaults)
     properties = model['properties'] = {}
-    for arg in argspec.args[:-len(defaults)]:
+    for arg in argspec.args[:len(argspec.args)-len(defaults)]:
       required.append(arg)
       # type: string for lack of better knowledge, until we add more metadata
       properties[arg] = {'type': 'string'}
